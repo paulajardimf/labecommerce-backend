@@ -1,9 +1,6 @@
-import { TUser } from "./types";
+import{users, products, purchases} from "./database"
 
-export const user: TUser[] = [
-  {
-    id: 1,
-    email: "labenu@labenu.com",
-    password: "123buba4",
-  },
-];
+console.log(users);
+console.log(products);
+console.log(purchases);
+
