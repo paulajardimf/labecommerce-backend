@@ -18,15 +18,15 @@ export const products: TProduct[] = [
     id: "1",
     name: "Produto 1",
     price: 30,
-    category: Category.CLOTHES_AND_SHOES
+    category: Category.CLOTHES_AND_SHOES,
   },
   {
     id: "2",
     name: "Produto 2",
     price: 15,
-    category: Category.ACCESSORIES
+    category: Category.ACCESSORIES,
   },
-]
+];
 
 export const purchases: TPurchase[] = [
   {
@@ -41,54 +41,71 @@ export const purchases: TPurchase[] = [
     quantity: 3,
     totalPrice: 45,
   },
-]
+];
 
 export function CreateUser(id: string, email: string, password: string) {
-  const newUser: TUser = {id, email, password}
-  users.push(newUser)
+  const newUser: TUser = { id, email, password };
+  users.push(newUser);
   console.log("Usuário cadastrado com sucesso!");
 }
 
-export function getAllUsers(users: TUser[]) : TUser[] {
-  return users
+export function getAllUsers(users: TUser[]): TUser[] {
+  return users;
 }
 
-export function createProduct(id: string, name:string, price: number, category: Category){
-  const newProduct : TProduct = {id, name, price, category}
-  products.push(newProduct)
+export function createProduct(
+  id: string,
+  name: string,
+  price: number,
+  category: Category
+) {
+  const newProduct: TProduct = { id, name, price, category };
+  products.push(newProduct);
   console.log("Produto cadastrado com sucesso!");
 }
 
-export function CreateProduct(id: string, name: string, price: number, category: Category) {
-  const newProduct : TProduct = {id, name, price, category}
-  products.push(newProduct)
-  console.log("Produto cadastrado com sucesso!"); 
+export function CreateProduct(
+  id: string,
+  name: string,
+  price: number,
+  category: Category
+) {
+  const newProduct: TProduct = { id, name, price, category };
+  products.push(newProduct);
+  console.log("Produto cadastrado com sucesso!");
 }
 
-export function getAllProducts(products: TProduct[]) : TProduct[] {
-  return products
+export function getAllProducts(products: TProduct[]): TProduct[] {
+  return products;
 }
 
-export function getProductById(idToSearch: string) : TProduct[] | undefined {
+export function getProductById(idToSearch: string): TProduct[] | undefined {
   return products.filter((product: TProduct) => {
-    return product.id === idToSearch
-  })
+    return product.id === idToSearch;
+  });
 }
 
-export function queryProductsByName (q: string) : TProduct[] | undefined {
-  return products.filter((product: TProduct) => {
-      return product.name.toLowerCase() === q
-  })
+export function queryProductsByName(q: string): TProduct[] {
+  return products.filter((product) => {
+    return product.name.toLowerCase().includes(q.toLowerCase());
+  });
 }
 
-export function createPurchase (userId: string, productId: string, quantity: number, totalPrice: number) {
-  const newPurchase : TPurchase = {userId, productId, quantity, totalPrice}
-  purchases.push(newPurchase)
+export function createPurchase(
+  userId: string,
+  productId: string,
+  quantity: number,
+  totalPrice: number
+) {
+  const newPurchase: TPurchase = { userId, productId, quantity, totalPrice };
+  purchases.push(newPurchase);
   console.log("Compra realizada com sucesso");
 }
 
-export function getAllPurchasesFromUserId (userIdToSearch: string) : TPurchase[] | undefined {
+export function getAllPurchasesFromUserId(
+  userIdToSearch: string
+): TPurchase[] | undefined {
   return purchases.filter((purchase) => {
-      return purchase.userId === userIdToSearch
-  })
+    return purchase.userId === userIdToSearch;
+  });
 }
