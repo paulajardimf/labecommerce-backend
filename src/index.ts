@@ -31,9 +31,27 @@ app.get('/products', (req: Request, res: Response) => {
 })
 
 
+// procura produtos por id
+app.get('/products/:id', (req: Request, res: Response) => {
+  const id = req.params.id;
+
+  const result = products.find((product) => product.id === id);
+
+  res.status(200).send(result);
+})
+
 // todas as compras
 app.get('/purchases', (req: Request, res: Response) => {
   res.status(200).send(purchases)
+})
+
+// busca compras por id
+app.get('/users/:id/purchases', (req: Request, res: Response) => {
+  const id = req.params.id
+
+  const result = purchases.find((user) => user.userId === id);
+
+  res.status(200).send(result);
 })
 
 // busca produtos por nome
@@ -62,6 +80,7 @@ app.post('/products', (req: Request, res: Response) => {
   res.status(201).send("Produto cadastrado com sucesso!")
 })
 
+
 // cria compra
 app.post('/purchases', (req: Request, res: Response) => {
   const {userId, productId, quantity, totalPrice} = req.body as TPurchase
@@ -69,4 +88,69 @@ app.post('/purchases', (req: Request, res: Response) => {
   createPurchase(userId, productId, quantity, totalPrice)
 
   res.status(201).send("Compra realizada com sucesso!")
+})
+
+//excluir usuário por id
+app.delete("/user/:id", (req: Request, res: Response) => {
+  const id = req.params.id
+
+  const indexToRemove = users.findIndex((user) => user.id === id)
+  if (indexToRemove >= 0) {        
+      users.splice(indexToRemove, 1)
+  }
+
+  res.status(200).send("Item deletado com sucesso")
+})
+
+//excluir produto por id
+app.delete("/product/:id", (req: Request, res: Response) => {
+  const id = req.params.id
+
+  const indexToRemove = products.findIndex((product) => product.id === id)
+
+  if (indexToRemove >= 0) {      
+      products.splice(indexToRemove, 1)
+  }
+
+  res.status(200).send("Item deletado com sucesso")
+})
+
+//Editar usuário por id
+app.put("/user/:id", (req: Request, resp: Response) => {
+  const id = req.params.id
+
+  const newId = req.body.id as string | undefined
+  const newEmail = req.body.email as string | undefined
+  const newPassword = req.body.password as string| undefined
+
+  const user = users.find((user) => user.id === id)
+
+  if (user){
+      user.id = newId || user.id
+      user.email = newEmail || user.email
+      user.password = newPassword || user.password        
+  }
+
+  resp.status(200).send("Atualização realizada com sucesso")
+})
+
+//Editar produto por id
+app.put("/product/:id", (req: Request, resp: Response) => {
+  const id = req.params.id
+
+  const newId = req.body.id as string | undefined
+  const newName = req.body.name as string | undefined
+  const newPrice = req.body.price as number | undefined
+  const newCategory = req.body.category as Category | undefined
+
+  const product = products.find((product) => product.id === id)
+
+  if (product){
+      product.id = newId || product.id
+      product.name = newName || product.name
+      product.price = newPrice || product.price
+      product.category = newCategory || product.category        
+  }
+
+  resp.status(200).send("Atualização realizada com sucesso")
 })
