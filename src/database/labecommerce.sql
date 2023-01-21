@@ -73,5 +73,41 @@ LIMIT 20 OFFSET 1;
 
 -- Get All Products FILTRO POR PREÇO ORDER ASCENDENTE
 SELECT * FROM products
-WHERE price >= 100 AND price <= 300
+WHERE price >= 10 AND price <= 30
 ORDER BY price ASC;
+
+-- Criação tabela de pedidos
+CREATE TABLE purchases(
+  id TEXT PRIMARY KEY UNIQUE NOT NULL,
+  total_price REAL NOT NULL,
+  paid INTEGER NOT NULL,
+  delivered_at TEXT,
+  buyer_id TEXT NOT NULL, 
+  FOREIGN KEY (buyer_id) REFERENCES users(id) 
+);
+
+SELECT * FROM purchases;
+
+INSERT INTO purchases(id, total_price, paid, buyer_id)
+VALUES ("c001", 100, 0, "u002"),
+       ("c002", 150, 0, "u002"),
+       ("c003", 350, 0, "u003"),
+       ("c004", 25, 0, "u003"),
+       ("c005", 75, 0, "u004"),
+       ("c006", 500, 0, "u004");
+
+-- Editando status de pago e entregue
+UPDATE purchases
+SET delivered_at = DATETIME('now'), paid = 1
+WHERE id = "c002";
+
+-- Query de consulta com JOIN nas tabelas de users e purchases
+SELECT 
+users.id AS userId,
+purchases.id AS purchasesId, 
+purchases.total_price AS totalPrice, 
+purchases.paid, 
+purchases.delivered_at AS deliveredAt
+FROM purchases
+JOIN users ON purchases.buyer_id = users.id 
+WHERE users.id = 'u002';
