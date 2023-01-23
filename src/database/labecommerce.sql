@@ -2,13 +2,14 @@
 CREATE TABLE users(
   id TEXT PRIMARY KEY UNIQUE NOT NULL,
   email TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL
+  password TEXT NOT NULL,
+  created_at TEXT NOT NULL
 );
 
-INSERT INTO users (id, email, password)
-VALUES ("u001", "paulajardimf@gmail.com", "paula123"),
-("u002", "barbaramaral@gmail.com", "barbara123"),
-("u003", "aline@gmail.com", "aline123");
+INSERT INTO users (id, email, password, created_at)
+VALUES ("u001", "paulajardimf@gmail.com", "paula123", DATETIME('now')),
+("u002", "barbaramaral@gmail.com", "barbara123",DATETIME('now')),
+("u003", "aline@gmail.com", "aline123", DATETIME('now'));
 
 
 CREATE TABLE products(
@@ -35,8 +36,8 @@ SELECT * FROM products;
 SELECT * FROM products WHERE name LIKE "%Produto3%";
 
 -- Create User
-INSERT INTO users(id, email, password)
-VALUES("u004", "anaclara@gmail.com", "sal123");
+INSERT INTO users(id, email, password, created_at)
+VALUES("u004", "anaclara@gmail.com", "sal123", DATETIME('now'));
 
 -- Create Product
 INSERT INTO products(id, name, price, category)
@@ -99,7 +100,7 @@ VALUES ("c001", 100, 0, "u002"),
 -- Editando status de pago e entregue
 UPDATE purchases
 SET delivered_at = DATETIME('now'), paid = 1
-WHERE id = "c003";
+WHERE id = "c001";
 
 -- Query de consulta com JOIN nas tabelas de users e purchases
 SELECT 
@@ -115,7 +116,9 @@ WHERE users.id = 'u002';
 CREATE TABLE purchases_products(
   purchase_id TEXT NOT NULL,
   product_id TEXT NOT NULL,
-  quantity INTEGER NOT NULL
+  quantity INTEGER NOT NULL,
+  FOREIGN KEY (purchase_id) REFERENCES purchases(id),
+  FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
 SELECT * FROM purchases_products;
