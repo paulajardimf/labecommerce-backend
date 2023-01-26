@@ -129,7 +129,20 @@ VALUES ("c001", "p003", 2),
        ("c003", "p003", 7);
 
 --Consulta com junção INNER JOIN
-SELECT purchases_products.*, purchases.*, products.*
-FROM purchases_products
-INNER JOIN purchases ON purchases_products.purchase_id = purchases.id
-INNER JOIN products ON purchases_products.product_id = products.id;
+SELECT
+purchases.id,
+purchases.total_price,
+purchases.paid,
+purchases.delivered_at,
+purchases.buyer_id,
+purchases_products.product_id AS productId,
+purchases_products.quantity,
+products.name,
+products.price,
+products.category
+FROM purchases
+LEFT JOIN purchases_products
+ON purchases_products.purchase_id = purchases.id 
+INNER JOIN products
+on purchases_products.product_id = products.id
+;
