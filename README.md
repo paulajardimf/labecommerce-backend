@@ -24,23 +24,34 @@
 ## Funcionabilidades do Projeto
 
 - [x] Cadastro de usuário:
-- Id;
-- E-mail;
-- Password.
+- id;
+- name;
+- email;
+- password;
+- created_at.
 <br>
 
 - [x] Cadastro de produtos:
-- Id;
-- Name;
-- Price;
-- Category.
+- id;
+- name;
+- price;
+- description;
+- image_url.
 <br>
 
 - [x] Cadastro de compras:
-- User Id;
-- Product Id;
-- Quantity;
-- Total Price.
+- id;
+- buyer;
+- total_price;
+- created_at;
+- paid.
+<br>
+
+- [x] Tabela de produtos por compras:
+- purchase_id;
+- product_id;
+- quantity.
+<br>
  
 ## Aplicações utilizadas
 - Postman
