@@ -17,7 +17,7 @@
 
 1. ``Node.js``
 2. ``Typescript.js``
-3. ``API``
+3. ``Knex``
 4. ``Express``
 5. ``SQLite``
 
