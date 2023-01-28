@@ -1,30 +1,34 @@
 -- Active: 1674262100032@@127.0.0.1@3306
 CREATE TABLE users(
   id TEXT PRIMARY KEY UNIQUE NOT NULL,
+  name TEXT NOT NULL,
   email TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
-  created_at TEXT NOT NULL
+  created_at TEXT DEFAULT(DATETIME()) NOT NULL
 );
 
-INSERT INTO users (id, email, password, created_at)
-VALUES ("u001", "paulajardimf@gmail.com", "paula123", DATETIME('now')),
-("u002", "barbaramaral@gmail.com", "barbara123",DATETIME('now')),
-("u003", "aline@gmail.com", "aline123", DATETIME('now'));
+INSERT INTO users (id, name, email, password)
+VALUES ("u001", "Paula", "paulajardimf@gmail.com", "paula123"),
+("u002", "Bárbara","barbaramaral@gmail.com", "barbara123"),
+("u003", "Aline", "aline@gmail.com", "aline123");
 
 
-CREATE TABLE products(
-  id TEXT PRIMARY KEY UNIQUE NOT NULL,
-  name TEXT NOT NULL,
-  price REAL NOT NULL,
-  category TEXT NOT NULL
-);
+CREATE TABLE products (
+    id TEXT PRIMARY KEY UNIQUE NOT NULL,
+    name TEXT NOT NULL,
+    price REAL NOT NULL,
+    description TEXT NOT NULL,
+    category TEXT NOT NULL,
+    image_url TEXT NOT NULL
+);  
 
-INSERT INTO products (id, name, price, category)
-VALUES ("p001", "produto1", 9.90, "Acessórios"),
-("p002", "produto2", 24.90, "Roupas e calçados"),
-("p003", "produto3", 19.90, "Roupas e calçados"),
-("p004", "produto4", 49.90, "Eletrônicos"),
-("p005", "produto5", 14.90, "Acessórios");
+INSERT INTO products (id, name, price, description,category, image_url)
+VALUES 
+("p001", "produto1", 9.90, "Acessório legal","Acessórios", "https://http2.mlstatic.com/D_NQ_NP_957367-MLB44536019148_012021-O.webp"),
+("p002", "produto2", 24.90, "Roupa legal", "Roupas e calçados", "https://http2.mlstatic.com/D_NQ_NP_957367-MLB44536019148_012021-O.webp"),
+("p003", "produto3", 19.90, "Calçado legal", "Roupas e calçados", "https://http2.mlstatic.com/D_NQ_NP_957367-MLB44536019148_012021-O.webp"),
+("p004", "produto4", 49.90, "Eletrônico legal", "Eletrônicos", "https://http2.mlstatic.com/D_NQ_NP_957367-MLB44536019148_012021-O.webp"),
+("p005", "produto5", 14.90, "Acessório legal", "Acessórios", "https://http2.mlstatic.com/D_NQ_NP_957367-MLB44536019148_012021-O.webp");
 
 -- Get All Products
 SELECT * FROM users;
@@ -36,12 +40,12 @@ SELECT * FROM products;
 SELECT * FROM products WHERE name LIKE "%Produto3%";
 
 -- Create User
-INSERT INTO users(id, email, password, created_at)
-VALUES("u004", "anaclara@gmail.com", "sal123", DATETIME('now'));
+INSERT INTO users(id, name, email, password)
+VALUES("u004", "Ana Clara","anaclara@gmail.com", "sal123");
 
 -- Create Product
-INSERT INTO products(id, name, price, category)
-VALUES ("p006", "produto6", 34.90, "Roupas e calçados");
+INSERT INTO products(id, name, price, description, category, image_url)
+VALUES ("p006", "produto6", 34.90, "Roupa legal", "Roupas e calçados", "https://http2.mlstatic.com/D_NQ_NP_957367-MLB44536019148_012021-O.webp");
 
 -- Get Products by id
 SELECT * FROM products
@@ -78,29 +82,36 @@ WHERE price >= 10 AND price <= 30
 ORDER BY price ASC;
 
 -- Criação tabela de pedidos
-CREATE TABLE purchases(
+CREATE TABLE purchases (
   id TEXT PRIMARY KEY UNIQUE NOT NULL,
+  buyer TEXT NOT NULL,
   total_price REAL NOT NULL,
+  created_at TEXT DEFAULT(DATETIME()) NOT NULL,
   paid INTEGER NOT NULL,
-  delivered_at TEXT,
-  buyer_id TEXT NOT NULL, 
-  FOREIGN KEY (buyer_id) REFERENCES users(id) 
+  FOREIGN KEY (buyer) REFERENCES users(id)
 );
 
 SELECT * FROM purchases;
 
-INSERT INTO purchases(id, total_price, paid, buyer_id)
-VALUES ("c001", 100, 0, "u002"),
-       ("c002", 150, 0, "u002"),
-       ("c003", 350, 0, "u003"),
-       ("c004", 25, 0, "u003"),
-       ("c005", 75, 0, "u004"),
-       ("c006", 500, 0, "u004");
+INSERT INTO purchases(id, buyer, total_price, paid)
+VALUES ("c001", "u002", 100, 0),
+       ("c002", "u002", 150, 0),
+       ("c003", "u003", 350, 0),
+       ("c004", "u003", 25, 0),
+       ("c005", "u004", 75, 0),
+       ("c006", "u004", 500, 0);
 
 -- Editando status de pago e entregue
 UPDATE purchases
-SET delivered_at = DATETIME('now'), paid = 1
+SET paid = 1, created_at = DATETIME('now')
 WHERE id = "c001";
+UPDATE purchases
+SET paid = 1, created_at = DATETIME('now')
+WHERE id = "c002";
+UPDATE purchases
+SET paid = 1, created_at = DATETIME('now')
+WHERE id = "c003";
+
 
 -- Query de consulta com JOIN nas tabelas de users e purchases
 SELECT 
