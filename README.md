@@ -1,5 +1,5 @@
 # Labecommerce Back End
-![Badge Em Andamento](http://img.shields.io/static/v1?label=STATUS&message=EM+ANDAMENTO&color=RED&style=for-the-badge)
+![Badge Finalizado](http://img.shields.io/static/v1?label=STATUS&message=FINALIZADO&color=RED&style=for-the-badge)
 
 ## Índice
 

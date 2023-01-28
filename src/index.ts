@@ -1,8 +1,4 @@
-import {
-  users,
-  products,
-  purchases
-} from "./database";
+import { users, products, purchases } from "./database";
 import { TUser, TProduct, TPurchase, Category } from "./types";
 import express, { Request, Response } from "express";
 import cors from "cors";
@@ -26,8 +22,7 @@ app.get("/ping", (req: Request, res: Response) => {
 // todos os usuários
 app.get("/users", async (req: Request, res: Response) => {
   try {
-    const result = await db.raw(`
-    SELECT * FROM users`);
+    const result = await db("users");
 
     res.status(200).send({ users: result });
   } catch (error: any) {
@@ -44,8 +39,7 @@ app.get("/users", async (req: Request, res: Response) => {
 // todos os produtos
 app.get("/products", async (req: Request, res: Response) => {
   try {
-    const result = await db.raw(`
-    SELECT * FROM products`);
+    const result = await db("products");
 
     res.status(200).send({ products: result });
   } catch (error: any) {
@@ -75,7 +69,6 @@ app.get("/products/:id", async (req: Request, res: Response) => {
     }
 
     res.status(200).send({ product: product });
-    
   } catch (error: any) {
     console.log(error);
 
@@ -84,15 +77,15 @@ app.get("/products/:id", async (req: Request, res: Response) => {
     }
 
     res.send(error.message);
-  }
+  }
 });
 
 // todas as compras
 app.get("/purchases", async (req: Request, res: Response) => {
   try {
-    const result = await db.raw(`SELECT * FROM purchases;`);
+    const result = await db("purchases");
 
-    res.status(200).send(result);
+    res.status(200).send({ purchases: result });
   } catch (error: any) {
     console.log(error);
 
@@ -100,7 +93,7 @@ app.get("/purchases", async (req: Request, res: Response) => {
       res.status(500);
     }
     res.send(error.message);
-  }
+  }
 });
 
 // busca compras por id do usuário
@@ -120,7 +113,6 @@ app.get("/users/:id/purchases", async (req: Request, res: Response) => {
 
     res.status(200).send({ purchase: userPurchase });
     console.log("Array de compras do usuário:");
-
   } catch (error: any) {
     console.log(error);
 
@@ -129,7 +121,7 @@ app.get("/users/:id/purchases", async (req: Request, res: Response) => {
     }
 
     res.send(error.message);
-  }
+  }
 });
 
 // busca produtos por nome
@@ -242,7 +234,8 @@ app.post("/users", async (req: Request, res: Response) => {
 // cria produto
 app.post("/products", async (req: Request, res: Response) => {
   try {
-    const { id, name, price, description, category, image_url } = req.body as TProduct;
+    const { id, name, price, description, category, image_url } =
+      req.body as TProduct;
 
     if (id !== undefined) {
       if (typeof id !== "string") {
@@ -326,7 +319,7 @@ app.post("/products", async (req: Request, res: Response) => {
     }
 
     res.send(error.message);
-  }
+  }
 });
 
 // cria compra
@@ -366,9 +359,7 @@ app.post("/purchases", async (req: Request, res: Response) => {
 
     if (id.length < 1 || buyer.length < 1) {
       res.status(400);
-      throw new Error(
-        "A informação da compra deve ter no minímo 1 caractere."
-      );
+      throw new Error("A informação da compra deve ter no minímo 1 caractere.");
     }
 
     if (total_price !== undefined) {
@@ -407,7 +398,61 @@ app.post("/purchases", async (req: Request, res: Response) => {
     }
 
     res.send(error.message);
-  }
+  }
+});
+
+// busca purchase por id
+app.get("/purchases/:id", async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+
+    const [purchase] = await db("purchases").where({ id: id });
+
+    if (purchase) {
+      const [purchase] = await db("purchases")
+        .select(
+          "purchases.id AS purchaseID",
+          "purchases.total_price AS totalPrice",
+          "purchases.created_at AS createdAt",
+          "purchases.paid AS isPaid",
+          "users.id AS buyerID",
+          "users.email",
+          "users.name"
+        )
+        .innerJoin("users", "purchases.buyer", "=", "users.id")
+        .where({'purchases.id': id});
+
+      const purchaseProducts = await db("purchases_products")
+        .select(
+          "purchases_products.product_id AS id",
+          "products.name",
+          "products.price",
+          "products.description",
+          "products.image_url AS urlImage",
+          "purchases_products.quantity"
+        )
+        .innerJoin(
+          "products",
+          "products.id",
+          "=",
+          "purchases_products.product_id"
+        );
+      const result = { ...purchase, productsList: purchaseProducts };
+      res.status(200).send({ purchase: result });
+    } else {
+      res.status(400);
+      throw new Error("A compra não existe!");
+    }
+    
+  } catch (error: any) {
+    console.log(error);
+
+    if (res.statusCode === 200) {
+      res.status(500);
+    }
+
+    res.send(error.message);
+  }
 });
 
 //excluir usuário por id
